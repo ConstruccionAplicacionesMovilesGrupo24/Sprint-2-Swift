@@ -15,6 +15,7 @@
 		F85A4A9E305CED15005C718C /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A8F305CED15005C718C /* Colors.swift */; };
 		F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A9F305CEF08005C718C /* LoginView.swift */; };
 		F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F28593305CF413004D5F3A /* RestaurantsView.swift */; };
+		000BAA94D4CED8F0D2B7F898 /* ComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A759A1A5A9748F811691B089 /* ComparisonView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		F85A4A8F305CED15005C718C /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		F85A4A9F305CEF08005C718C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		F8F28593305CF413004D5F3A /* RestaurantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsView.swift; sourceTree = "<group>"; };
+		A759A1A5A9748F811691B089 /* ComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -154,6 +156,7 @@
 		F85A4A97305CED15005C718C /* Decision */ = {
 			isa = PBXGroup;
 			children = (
+				A759A1A5A9748F811691B089 /* ComparisonView.swift */,
 			);
 			path = Decision;
 			sourceTree = "<group>";
@@ -287,6 +290,7 @@
 				F85A4A9E305CED15005C718C /* Colors.swift in Sources */,
 				F8080D6C305CF86D0076CD16 /* Typography.swift in Sources */,
 				F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */,
+				000BAA94D4CED8F0D2B7F898 /* ComparisonView.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
