@@ -9,12 +9,14 @@
 /* Begin PBXBuildFile section */
 		F85A4A9E305CED15005C718C /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A8F305CED15005C718C /* Colors.swift */; };
 		F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A9F305CEF08005C718C /* LoginView.swift */; };
+		F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F28593305CF413004D5F3A /* RestaurantsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		F85A4A7A305CE961005C718C /* CampusMeal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CampusMeal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F85A4A8F305CED15005C718C /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		F85A4A9F305CEF08005C718C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		F8F28593305CF413004D5F3A /* RestaurantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -137,6 +139,7 @@
 		F85A4A9A305CED15005C718C /* Restaurants */ = {
 			isa = PBXGroup;
 			children = (
+				F8F28593305CF413004D5F3A /* RestaurantsView.swift */,
 			);
 			path = Restaurants;
 			sourceTree = "<group>";
@@ -240,6 +243,7 @@
 		F85A4A76305CE961005C718C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */,
 				F85A4A9E305CED15005C718C /* Colors.swift in Sources */,
 				F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */,
 			);
