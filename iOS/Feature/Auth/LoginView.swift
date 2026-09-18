@@ -10,6 +10,7 @@ import SwiftUI
 struct LoginView: View {
     @State private var email: String = ""
     @State private var password: String = ""
+    var onLogin: () -> Void = {}
 
     var body: some View {
         ZStack {
@@ -75,6 +76,7 @@ struct LoginView: View {
 
                 Button {
                     // Mock for MS7 — real authentication logic (Keychain + backend) is implemented in Sprint 2.
+                    onLogin()
                 } label: {
                     Text("Log in")
                         .font(CampusMealTypography.labelL)

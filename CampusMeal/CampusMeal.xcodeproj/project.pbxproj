@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		000BAA94D4CED8F0D2B7F898 /* ComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A759A1A5A9748F811691B089 /* ComparisonView.swift */; };
+		80FA562CFD0645997C471A5D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF67453316068FDE57624FB /* HomeView.swift */; };
 		F8080D6C305CF86D0076CD16 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8080D6B305CF86D0076CD16 /* Typography.swift */; };
 		F8080D6D305CF86D0076CD16 /* inter_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8080D67305CF86D0076CD16 /* inter_medium.ttf */; };
 		F8080D6E305CF86D0076CD16 /* inter_semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8080D69305CF86D0076CD16 /* inter_semibold.ttf */; };
@@ -15,9 +17,12 @@
 		F85A4A9E305CED15005C718C /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A8F305CED15005C718C /* Colors.swift */; };
 		F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A9F305CEF08005C718C /* LoginView.swift */; };
 		F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F28593305CF413004D5F3A /* RestaurantsView.swift */; };
+		420E9EA6F6BFEDCE581BF3D7 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2F6E72D95424F9F5A449CD /* RootView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A759A1A5A9748F811691B089 /* ComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonView.swift; sourceTree = "<group>"; };
+		BCF67453316068FDE57624FB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		F8080D66305CF86D0076CD16 /* inter_bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inter_bold.ttf; sourceTree = "<group>"; };
 		F8080D67305CF86D0076CD16 /* inter_medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inter_medium.ttf; sourceTree = "<group>"; };
 		F8080D68305CF86D0076CD16 /* inter_regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inter_regular.ttf; sourceTree = "<group>"; };
@@ -27,6 +32,7 @@
 		F85A4A8F305CED15005C718C /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		F85A4A9F305CEF08005C718C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		F8F28593305CF413004D5F3A /* RestaurantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsView.swift; sourceTree = "<group>"; };
+		0F2F6E72D95424F9F5A449CD /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -59,6 +65,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EAF998613815D09F08A38B6D /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				BCF67453316068FDE57624FB /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
 		F8080D6A305CF86D0076CD16 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -154,6 +168,7 @@
 		F85A4A97305CED15005C718C /* Decision */ = {
 			isa = PBXGroup;
 			children = (
+				A759A1A5A9748F811691B089 /* ComparisonView.swift */,
 			);
 			path = Decision;
 			sourceTree = "<group>";
@@ -184,6 +199,7 @@
 			isa = PBXGroup;
 			children = (
 				F85A4A95305CED15005C718C /* Auth */,
+				EAF998613815D09F08A38B6D /* Home */,
 				F85A4A96305CED15005C718C /* Context */,
 				F85A4A97305CED15005C718C /* Decision */,
 				F85A4A98305CED15005C718C /* Inventory */,
@@ -196,6 +212,7 @@
 		F85A4A9C305CED15005C718C /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
+				0F2F6E72D95424F9F5A449CD /* RootView.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -283,10 +300,13 @@
 		F85A4A76305CE961005C718C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				420E9EA6F6BFEDCE581BF3D7 /* RootView.swift in Sources */,
 				F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */,
 				F85A4A9E305CED15005C718C /* Colors.swift in Sources */,
 				F8080D6C305CF86D0076CD16 /* Typography.swift in Sources */,
 				F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */,
+				000BAA94D4CED8F0D2B7F898 /* ComparisonView.swift in Sources */,
+				80FA562CFD0645997C471A5D /* HomeView.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
@@ -420,7 +440,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = J5M59MH67B;
+				DEVELOPMENT_TEAM = T79DS5MA8Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CampusMeal/Info.plist;
@@ -436,7 +456,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = edu.uniandes.campusmeal.CampusMeal;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.uniandes.campusmeal.CampusMeal.carlos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -459,7 +479,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = J5M59MH67B;
+				DEVELOPMENT_TEAM = T79DS5MA8Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = CampusMeal/Info.plist;
@@ -475,7 +495,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = edu.uniandes.campusmeal.CampusMeal;
+				PRODUCT_BUNDLE_IDENTIFIER = edu.uniandes.campusmeal.CampusMeal.carlos;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
