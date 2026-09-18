@@ -16,6 +16,7 @@
 		F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A9F305CEF08005C718C /* LoginView.swift */; };
 		F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F28593305CF413004D5F3A /* RestaurantsView.swift */; };
 		000BAA94D4CED8F0D2B7F898 /* ComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A759A1A5A9748F811691B089 /* ComparisonView.swift */; };
+		80FA562CFD0645997C471A5D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF67453316068FDE57624FB /* HomeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		F85A4A9F305CEF08005C718C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		F8F28593305CF413004D5F3A /* RestaurantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsView.swift; sourceTree = "<group>"; };
 		A759A1A5A9748F811691B089 /* ComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonView.swift; sourceTree = "<group>"; };
+		BCF67453316068FDE57624FB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -138,6 +140,14 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		EAF998613815D09F08A38B6D /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				BCF67453316068FDE57624FB /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
 		F85A4A95305CED15005C718C /* Auth */ = {
 			isa = PBXGroup;
 			children = (
@@ -187,6 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				F85A4A95305CED15005C718C /* Auth */,
+				EAF998613815D09F08A38B6D /* Home */,
 				F85A4A96305CED15005C718C /* Context */,
 				F85A4A97305CED15005C718C /* Decision */,
 				F85A4A98305CED15005C718C /* Inventory */,
@@ -291,6 +302,7 @@
 				F8080D6C305CF86D0076CD16 /* Typography.swift in Sources */,
 				F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */,
 				000BAA94D4CED8F0D2B7F898 /* ComparisonView.swift in Sources */,
+				80FA562CFD0645997C471A5D /* HomeView.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
