@@ -6,8 +6,13 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F85A4A9E305CED15005C718C /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A8F305CED15005C718C /* Colors.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		F85A4A7A305CE961005C718C /* CampusMeal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CampusMeal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F85A4A8F305CED15005C718C /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -30,6 +35,7 @@
 		F85A4A71305CE961005C718C = {
 			isa = PBXGroup;
 			children = (
+				F85A4A9D305CED15005C718C /* iOS */,
 				F85A4A7C305CE961005C718C /* CampusMeal */,
 				F85A4A7B305CE961005C718C /* Products */,
 			);
@@ -42,6 +48,127 @@
 			);
 			name = Products;
 			sourceTree = "<group>";
+		};
+		F85A4A8E305CED15005C718C /* App */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F85A4A90305CED15005C718C /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				F85A4A8F305CED15005C718C /* Colors.swift */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		F85A4A91305CED15005C718C /* Location */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Location;
+			sourceTree = "<group>";
+		};
+		F85A4A92305CED15005C718C /* Network */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
+		F85A4A93305CED15005C718C /* Session */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Session;
+			sourceTree = "<group>";
+		};
+		F85A4A94305CED15005C718C /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				F85A4A90305CED15005C718C /* DesignSystem */,
+				F85A4A91305CED15005C718C /* Location */,
+				F85A4A92305CED15005C718C /* Network */,
+				F85A4A93305CED15005C718C /* Session */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		F85A4A95305CED15005C718C /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		F85A4A96305CED15005C718C /* Context */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Context;
+			sourceTree = "<group>";
+		};
+		F85A4A97305CED15005C718C /* Decision */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Decision;
+			sourceTree = "<group>";
+		};
+		F85A4A98305CED15005C718C /* Inventory */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Inventory;
+			sourceTree = "<group>";
+		};
+		F85A4A99305CED15005C718C /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
+		F85A4A9A305CED15005C718C /* Restaurants */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Restaurants;
+			sourceTree = "<group>";
+		};
+		F85A4A9B305CED15005C718C /* Feature */ = {
+			isa = PBXGroup;
+			children = (
+				F85A4A95305CED15005C718C /* Auth */,
+				F85A4A96305CED15005C718C /* Context */,
+				F85A4A97305CED15005C718C /* Decision */,
+				F85A4A98305CED15005C718C /* Inventory */,
+				F85A4A99305CED15005C718C /* Profile */,
+				F85A4A9A305CED15005C718C /* Restaurants */,
+			);
+			path = Feature;
+			sourceTree = "<group>";
+		};
+		F85A4A9C305CED15005C718C /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		F85A4A9D305CED15005C718C /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				F85A4A8E305CED15005C718C /* App */,
+				F85A4A94305CED15005C718C /* Core */,
+				F85A4A9B305CED15005C718C /* Feature */,
+				F85A4A9C305CED15005C718C /* Navigation */,
+			);
+			name = iOS;
+			path = ../iOS;
+			sourceTree = SOURCE_ROOT;
 		};
 /* End PBXGroup section */
 
@@ -110,6 +237,7 @@
 		F85A4A76305CE961005C718C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
+				F85A4A9E305CED15005C718C /* Colors.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
