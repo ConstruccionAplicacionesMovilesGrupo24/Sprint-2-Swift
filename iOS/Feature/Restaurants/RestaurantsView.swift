@@ -7,47 +7,72 @@
 
 import SwiftUI
 
+private enum RestaurantStatus {
+    case openNow
+    case opensAt(String)
+    case closed
+}
+
 private struct Restaurant: Identifiable {
     let id = UUID()
     let name: String
-    let cuisine: String
-    let distanceMinutes: Int
+    let tags: String
     let rating: Double
-    let isOpen: Bool
+    let walkMinutes: Int
+    let totalMinutes: Int?
+    let priceFrom: String
+    let status: RestaurantStatus
+    let recommendation: String?
+    let updatedLabel: String
 }
 
 // Mock data for MS7 — will be replaced by a real repository backed by the CampusMeal API in Sprint 2.
 private let mockRestaurants: [Restaurant] = [
-    Restaurant(name: "La Central Uniandina", cuisine: "Colombian", distanceMinutes: 4, rating: 4.5, isOpen: true),
-    Restaurant(name: "Sushi Rápido", cuisine: "Japanese", distanceMinutes: 7, rating: 4.2, isOpen: true),
-    Restaurant(name: "Green Bowl", cuisine: "Healthy", distanceMinutes: 3, rating: 4.7, isOpen: true),
-    Restaurant(name: "Pizza del Parque", cuisine: "Italian", distanceMinutes: 9, rating: 4.0, isOpen: false),
-    Restaurant(name: "Arepas & Co.", cuisine: "Colombian", distanceMinutes: 5, rating: 4.3, isOpen: true)
+    Restaurant(name: "Green Bowl", tags: "Healthy · Bowls", rating: 4.6, walkMinutes: 12, totalMinutes: 38, priceFrom: "$17,000", status: .openNow, recommendation: "Recommended because it fits your 45 minutes and your budget.", updatedLabel: "Updated today"),
+    Restaurant(name: "The Garden", tags: "Home-style", rating: 4.4, walkMinutes: 8, totalMinutes: 31, priceFrom: "$14,500", status: .openNow, recommendation: "The fastest option with today's vegetarian menu.", updatedLabel: "Updated today"),
+    Restaurant(name: "Andean Flavor", tags: "Business lunches", rating: 4.2, walkMinutes: 15, totalMinutes: nil, priceFrom: "$16,000", status: .opensAt("5:00 PM"), recommendation: nil, updatedLabel: "Updated today"),
+    Restaurant(name: "Sushi Rápido", tags: "Japanese", rating: 4.2, walkMinutes: 7, totalMinutes: 24, priceFrom: "$22,000", status: .openNow, recommendation: nil, updatedLabel: "Updated yesterday")
 ]
 
 struct RestaurantsView: View {
     var body: some View {
         ZStack {
-            CampusMealColors.sand100
+            CampusMealColors.neutral50
                 .ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 16) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Restaurants")
-                        .font(.largeTitle.bold())
+                HStack(spacing: 12) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 17, weight: .semibold))
                         .foregroundStyle(CampusMealColors.neutral900)
 
-                    Text("Places near campus, ranked by distance")
-                        .font(.subheadline)
-                        .foregroundStyle(CampusMealColors.neutral500)
+                    Text("Nearby restaurants")
+                        .font(CampusMealTypography.headingL)
+                        .foregroundStyle(CampusMealColors.neutral900)
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 12)
 
+                HStack {
+                    Text("45 min · COP 20,000 · Vegetarian")
+                        .font(CampusMealTypography.bodyM)
+                        .foregroundStyle(CampusMealColors.brand700)
+
+                    Spacer()
+
+                    Text("Filters")
+                        .font(CampusMealTypography.labelM)
+                        .foregroundStyle(CampusMealColors.brand600)
+                }
+                .padding(14)
+                .background(CampusMealColors.brand100)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .padding(.horizontal, 20)
+
                 ScrollView {
                     VStack(spacing: 12) {
                         ForEach(mockRestaurants) { restaurant in
-                            RestaurantRow(restaurant: restaurant)
+                            RestaurantCard(restaurant: restaurant)
                         }
                     }
                     .padding(.horizontal, 20)
@@ -58,53 +83,132 @@ struct RestaurantsView: View {
     }
 }
 
-private struct RestaurantRow: View {
+private struct RestaurantCard: View {
     let restaurant: Restaurant
 
     var body: some View {
-        HStack(spacing: 14) {
-            RoundedRectangle(cornerRadius: 12)
-                .fill(CampusMealColors.brand100)
-                .frame(width: 56, height: 56)
-                .overlay(
-                    Image(systemName: "fork.knife")
-                        .foregroundStyle(CampusMealColors.brand600)
-                )
-
-            VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
                 Text(restaurant.name)
-                    .font(.headline)
+                    .font(CampusMealTypography.headingM)
                     .foregroundStyle(CampusMealColors.neutral900)
 
-                Text(restaurant.cuisine)
-                    .font(.caption)
-                    .foregroundStyle(CampusMealColors.neutral500)
+                Spacer()
 
-                HStack(spacing: 10) {
-                    Label("\(restaurant.distanceMinutes) min", systemImage: "figure.walk")
-                    Label(String(format: "%.1f", restaurant.rating), systemImage: "star.fill")
-                }
-                .font(.caption2)
-                .foregroundStyle(CampusMealColors.neutral700)
+                StatusPill(status: restaurant.status)
             }
 
-            Spacer()
+            Text("\(restaurant.tags) · ★ \(String(format: "%.1f", restaurant.rating))")
+                .font(CampusMealTypography.bodyS)
+                .foregroundStyle(CampusMealColors.neutral500)
 
-            Text(restaurant.isOpen ? "Open" : "Closed")
-                .font(.caption2.bold())
-                .foregroundStyle(restaurant.isOpen ? CampusMealColors.positive700 : CampusMealColors.neutral500)
-                .padding(.horizontal, 10)
-                .padding(.vertical, 5)
-                .background(restaurant.isOpen ? CampusMealColors.positive100 : CampusMealColors.neutral100)
-                .clipShape(Capsule())
+            HStack(spacing: 10) {
+                StatChip(value: "\(restaurant.walkMinutes) min", label: "Walk")
+                StatChip(value: restaurant.totalMinutes.map { "\($0) min" } ?? "—", label: "Total")
+                StatChip(value: restaurant.priceFrom, label: "From")
+            }
+
+            if let recommendation = restaurant.recommendation {
+                Text(recommendation)
+                    .font(CampusMealTypography.bodyS)
+                    .foregroundStyle(CampusMealColors.neutral700)
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(CampusMealColors.accent50)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            }
+
+            HStack {
+                Text(restaurant.updatedLabel)
+                    .font(CampusMealTypography.caption)
+                    .foregroundStyle(CampusMealColors.neutral500)
+
+                Spacer()
+
+                Button {
+                    // Navigation to restaurant detail — implemented alongside BQ work in Sprint 2.
+                } label: {
+                    Text("View details")
+                        .font(CampusMealTypography.labelM)
+                        .foregroundStyle(CampusMealColors.brand600)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(CampusMealColors.brand500, lineWidth: 1.5)
+                        )
+                }
+            }
         }
-        .padding(12)
+        .padding(14)
         .background(CampusMealColors.neutral0)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-        .overlay(
-            RoundedRectangle(cornerRadius: 14)
-                .stroke(CampusMealColors.sand200, lineWidth: 1)
-        )
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+private struct StatChip: View {
+    let value: String
+    let label: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(value)
+                .font(CampusMealTypography.labelL)
+                .foregroundStyle(CampusMealColors.neutral900)
+            Text(label)
+                .font(CampusMealTypography.caption)
+                .foregroundStyle(CampusMealColors.neutral500)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(10)
+        .background(CampusMealColors.sand100)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+private struct StatusPill: View {
+    let status: RestaurantStatus
+
+    private var text: String {
+        switch status {
+        case .openNow: "Open now"
+        case .opensAt(let time): "Opens \(time)"
+        case .closed: "Closed"
+        }
+    }
+
+    private var foreground: Color {
+        switch status {
+        case .openNow: CampusMealColors.positive700
+        case .opensAt, .closed: CampusMealColors.neutral700
+        }
+    }
+
+    private var background: Color {
+        switch status {
+        case .openNow: CampusMealColors.positive100
+        case .opensAt, .closed: CampusMealColors.neutral100
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 5) {
+            if case .openNow = status {
+                Circle()
+                    .fill(CampusMealColors.positive500)
+                    .frame(width: 6, height: 6)
+            } else if case .opensAt = status {
+                Image(systemName: "clock")
+                    .font(.system(size: 10))
+            }
+            Text(text)
+                .font(CampusMealTypography.caption)
+        }
+        .foregroundStyle(foreground)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .background(background)
+        .clipShape(Capsule())
     }
 }
 

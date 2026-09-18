@@ -13,82 +13,98 @@ struct LoginView: View {
 
     var body: some View {
         ZStack {
-            CampusMealColors.sand100
+            CampusMealColors.neutral50
                 .ignoresSafeArea()
 
-            VStack(spacing: 24) {
-                Spacer()
+            VStack(alignment: .leading, spacing: 24) {
+                RoundedRectangle(cornerRadius: 14)
+                    .fill(CampusMealColors.brand500)
+                    .frame(width: 56, height: 56)
+                    .overlay(
+                        Text("CM")
+                            .font(CampusMealTypography.headingM)
+                            .foregroundStyle(CampusMealColors.neutral0)
+                    )
 
-                VStack(spacing: 8) {
-                    Image(systemName: "fork.knife.circle.fill")
-                        .font(.system(size: 56))
-                        .foregroundStyle(CampusMealColors.brand500)
-
-                    Text("CampusMeal")
-                        .font(.largeTitle.bold())
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Welcome back")
+                        .font(CampusMealTypography.headingXL)
                         .foregroundStyle(CampusMealColors.neutral900)
 
-                    Text("Find what to eat, nearby and on time")
-                        .font(.subheadline)
+                    Text("Decide what to eat today in under a minute.")
+                        .font(CampusMealTypography.bodyM)
                         .foregroundStyle(CampusMealColors.neutral500)
                 }
 
-                VStack(spacing: 16) {
+                VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Email")
-                            .font(.caption)
+                        Text("Institutional email")
+                            .font(CampusMealTypography.labelM)
                             .foregroundStyle(CampusMealColors.neutral700)
-                        TextField("youremail@uniandes.edu.co", text: $email)
+                        TextField("user@uniandes.edu.co", text: $email)
+                            .font(CampusMealTypography.bodyL)
                             .textInputAutocapitalization(.never)
                             .keyboardType(.emailAddress)
-                            .padding(12)
+                            .padding(14)
                             .background(CampusMealColors.neutral0)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(CampusMealColors.sand300, lineWidth: 1)
-                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
 
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Password")
-                            .font(.caption)
+                            .font(CampusMealTypography.labelM)
                             .foregroundStyle(CampusMealColors.neutral700)
-                        SecureField("••••••••", text: $password)
-                            .padding(12)
+                        SecureField("••••••••••", text: $password)
+                            .font(CampusMealTypography.bodyL)
+                            .padding(14)
                             .background(CampusMealColors.neutral0)
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 10)
-                                    .stroke(CampusMealColors.sand300, lineWidth: 1)
-                            )
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+
+                    HStack {
+                        Spacer()
+                        Button {
+                            // Password recovery flow — implemented in Sprint 2.
+                        } label: {
+                            Text("Forgot password?")
+                                .font(CampusMealTypography.labelM)
+                                .foregroundStyle(CampusMealColors.brand600)
+                        }
                     }
                 }
 
                 Button {
                     // Mock for MS7 — real authentication logic (Keychain + backend) is implemented in Sprint 2.
                 } label: {
-                    Text("Sign In")
-                        .font(.headline)
-                        .foregroundStyle(CampusMealColors.neutral0)
+                    Text("Log in")
+                        .font(CampusMealTypography.labelL)
+                        .foregroundStyle(CampusMealColors.neutral900)
                         .frame(maxWidth: .infinity)
-                        .padding(14)
+                        .padding(16)
                         .background(CampusMealColors.brand500)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
-
-                Button {
-                    // Navigation to sign up — pending.
-                } label: {
-                    Text("Don't have an account? Sign up")
-                        .font(.footnote)
-                        .foregroundStyle(CampusMealColors.brand600)
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
 
                 Spacer()
-                Spacer()
+
+                HStack(spacing: 4) {
+                    Spacer()
+                    Text("Don't have an account?")
+                        .font(CampusMealTypography.bodyM)
+                        .foregroundStyle(CampusMealColors.neutral500)
+                    Button {
+                        // Navigation to sign up — pending.
+                    } label: {
+                        Text("Create account")
+                            .font(CampusMealTypography.labelM)
+                            .foregroundStyle(CampusMealColors.brand600)
+                    }
+                    Spacer()
+                }
             }
-            .padding(.horizontal, 28)
+            .padding(.horizontal, 24)
+            .padding(.top, 80)
+            .padding(.bottom, 40)
         }
     }
 }

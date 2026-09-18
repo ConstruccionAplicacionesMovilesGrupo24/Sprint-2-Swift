@@ -7,21 +7,44 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F8080D6C305CF86D0076CD16 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8080D6B305CF86D0076CD16 /* Typography.swift */; };
+		F8080D6D305CF86D0076CD16 /* inter_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8080D67305CF86D0076CD16 /* inter_medium.ttf */; };
+		F8080D6E305CF86D0076CD16 /* inter_semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8080D69305CF86D0076CD16 /* inter_semibold.ttf */; };
+		F8080D6F305CF86D0076CD16 /* inter_bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8080D66305CF86D0076CD16 /* inter_bold.ttf */; };
+		F8080D70305CF86D0076CD16 /* inter_regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8080D68305CF86D0076CD16 /* inter_regular.ttf */; };
 		F85A4A9E305CED15005C718C /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A8F305CED15005C718C /* Colors.swift */; };
 		F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A9F305CEF08005C718C /* LoginView.swift */; };
 		F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F28593305CF413004D5F3A /* RestaurantsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F8080D66305CF86D0076CD16 /* inter_bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inter_bold.ttf; sourceTree = "<group>"; };
+		F8080D67305CF86D0076CD16 /* inter_medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inter_medium.ttf; sourceTree = "<group>"; };
+		F8080D68305CF86D0076CD16 /* inter_regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inter_regular.ttf; sourceTree = "<group>"; };
+		F8080D69305CF86D0076CD16 /* inter_semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inter_semibold.ttf; sourceTree = "<group>"; };
+		F8080D6B305CF86D0076CD16 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
 		F85A4A7A305CE961005C718C /* CampusMeal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CampusMeal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F85A4A8F305CED15005C718C /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		F85A4A9F305CEF08005C718C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		F8F28593305CF413004D5F3A /* RestaurantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F8080D72305CF9E00076CD16 /* Exceptions for "CampusMeal" folder in "CampusMeal" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F85A4A79305CE961005C718C /* CampusMeal */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		F85A4A7C305CE961005C718C /* CampusMeal */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F8080D72305CF9E00076CD16 /* Exceptions for "CampusMeal" folder in "CampusMeal" target */,
+			);
 			path = CampusMeal;
 			sourceTree = "<group>";
 		};
@@ -36,6 +59,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		F8080D6A305CF86D0076CD16 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				F8080D66305CF86D0076CD16 /* inter_bold.ttf */,
+				F8080D67305CF86D0076CD16 /* inter_medium.ttf */,
+				F8080D68305CF86D0076CD16 /* inter_regular.ttf */,
+				F8080D69305CF86D0076CD16 /* inter_semibold.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
 		F85A4A71305CE961005C718C = {
 			isa = PBXGroup;
 			children = (
@@ -63,6 +97,8 @@
 		F85A4A90305CED15005C718C /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
+				F8080D6A305CF86D0076CD16 /* Fonts */,
+				F8080D6B305CF86D0076CD16 /* Typography.swift */,
 				F85A4A8F305CED15005C718C /* Colors.swift */,
 			);
 			path = DesignSystem;
@@ -235,6 +271,10 @@
 		F85A4A78305CE961005C718C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
+				F8080D6D305CF86D0076CD16 /* inter_medium.ttf in Resources */,
+				F8080D6E305CF86D0076CD16 /* inter_semibold.ttf in Resources */,
+				F8080D6F305CF86D0076CD16 /* inter_bold.ttf in Resources */,
+				F8080D70305CF86D0076CD16 /* inter_regular.ttf in Resources */,
 			);
 		};
 /* End PBXResourcesBuildPhase section */
@@ -245,6 +285,7 @@
 			files = (
 				F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */,
 				F85A4A9E305CED15005C718C /* Colors.swift in Sources */,
+				F8080D6C305CF86D0076CD16 /* Typography.swift in Sources */,
 				F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */,
 			);
 		};
@@ -382,6 +423,7 @@
 				DEVELOPMENT_TEAM = J5M59MH67B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CampusMeal/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -420,6 +462,7 @@
 				DEVELOPMENT_TEAM = J5M59MH67B;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CampusMeal/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
