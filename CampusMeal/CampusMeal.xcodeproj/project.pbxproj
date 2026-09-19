@@ -8,19 +8,23 @@
 
 /* Begin PBXBuildFile section */
 		000BAA94D4CED8F0D2B7F898 /* ComparisonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A759A1A5A9748F811691B089 /* ComparisonView.swift */; };
+		420E9EA6F6BFEDCE581BF3D7 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2F6E72D95424F9F5A449CD /* RootView.swift */; };
 		80FA562CFD0645997C471A5D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF67453316068FDE57624FB /* HomeView.swift */; };
 		F8080D6C305CF86D0076CD16 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8080D6B305CF86D0076CD16 /* Typography.swift */; };
 		F8080D6D305CF86D0076CD16 /* inter_medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8080D67305CF86D0076CD16 /* inter_medium.ttf */; };
 		F8080D6E305CF86D0076CD16 /* inter_semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8080D69305CF86D0076CD16 /* inter_semibold.ttf */; };
 		F8080D6F305CF86D0076CD16 /* inter_bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8080D66305CF86D0076CD16 /* inter_bold.ttf */; };
 		F8080D70305CF86D0076CD16 /* inter_regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F8080D68305CF86D0076CD16 /* inter_regular.ttf */; };
+		F8080D7E305E0A680076CD16 /* InventoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8080D7D305E0A680076CD16 /* InventoryView.swift */; };
+		F8080D80305E0A7F0076CD16 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8080D7F305E0A7F0076CD16 /* ProfileView.swift */; };
+		F8080D82305E0A890076CD16 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8080D81305E0A890076CD16 /* MainTabView.swift */; };
 		F85A4A9E305CED15005C718C /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A8F305CED15005C718C /* Colors.swift */; };
 		F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A9F305CEF08005C718C /* LoginView.swift */; };
 		F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F28593305CF413004D5F3A /* RestaurantsView.swift */; };
-		420E9EA6F6BFEDCE581BF3D7 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2F6E72D95424F9F5A449CD /* RootView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0F2F6E72D95424F9F5A449CD /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		A759A1A5A9748F811691B089 /* ComparisonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonView.swift; sourceTree = "<group>"; };
 		BCF67453316068FDE57624FB /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		F8080D66305CF86D0076CD16 /* inter_bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inter_bold.ttf; sourceTree = "<group>"; };
@@ -28,11 +32,13 @@
 		F8080D68305CF86D0076CD16 /* inter_regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inter_regular.ttf; sourceTree = "<group>"; };
 		F8080D69305CF86D0076CD16 /* inter_semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = inter_semibold.ttf; sourceTree = "<group>"; };
 		F8080D6B305CF86D0076CD16 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
+		F8080D7D305E0A680076CD16 /* InventoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryView.swift; sourceTree = "<group>"; };
+		F8080D7F305E0A7F0076CD16 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		F8080D81305E0A890076CD16 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		F85A4A7A305CE961005C718C /* CampusMeal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CampusMeal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F85A4A8F305CED15005C718C /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		F85A4A9F305CEF08005C718C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		F8F28593305CF413004D5F3A /* RestaurantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsView.swift; sourceTree = "<group>"; };
-		0F2F6E72D95424F9F5A449CD /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -176,6 +182,7 @@
 		F85A4A98305CED15005C718C /* Inventory */ = {
 			isa = PBXGroup;
 			children = (
+				F8080D7D305E0A680076CD16 /* InventoryView.swift */,
 			);
 			path = Inventory;
 			sourceTree = "<group>";
@@ -183,6 +190,7 @@
 		F85A4A99305CED15005C718C /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				F8080D7F305E0A7F0076CD16 /* ProfileView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -212,6 +220,7 @@
 		F85A4A9C305CED15005C718C /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
+				F8080D81305E0A890076CD16 /* MainTabView.swift */,
 				0F2F6E72D95424F9F5A449CD /* RootView.swift */,
 			);
 			path = Navigation;
@@ -301,12 +310,15 @@
 			isa = PBXSourcesBuildPhase;
 			files = (
 				420E9EA6F6BFEDCE581BF3D7 /* RootView.swift in Sources */,
+				F8080D7E305E0A680076CD16 /* InventoryView.swift in Sources */,
 				F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */,
 				F85A4A9E305CED15005C718C /* Colors.swift in Sources */,
 				F8080D6C305CF86D0076CD16 /* Typography.swift in Sources */,
 				F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */,
 				000BAA94D4CED8F0D2B7F898 /* ComparisonView.swift in Sources */,
+				F8080D80305E0A7F0076CD16 /* ProfileView.swift in Sources */,
 				80FA562CFD0645997C471A5D /* HomeView.swift in Sources */,
+				F8080D82305E0A890076CD16 /* MainTabView.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
