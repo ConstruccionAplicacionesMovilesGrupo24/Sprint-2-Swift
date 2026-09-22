@@ -8,10 +8,11 @@ import Foundation
 // Async/await networking layer talking to the CampusMeal backend
 // (`/api/v1` base — section 9 of backend-architecture-and-frontend-integration.md).
 //
-// Auth headers and the 401 refresh/retry flow live in `Core/Session`, not here:
-// this client only knows how to send a request and decode/throw a typed result.
-// `authorizationProvider` is injected so this module has no dependency on
-// Session — Session depends on this client, not the other way around.
+// This client only knows how to send a request, decode/throw a typed result,
+// and retry once after a refresh. It has no knowledge of Keychain or the
+// `auth/refresh` contract: `authorizationProvider` and `refreshHandler` are
+// injected by `Core/Session` (SessionManager) so Session depends on Network,
+// never the other way around.
 final class APIClient {
     static let shared = APIClient(baseURL: URL(string: "http://localhost:3000/api/v1/")!)
 
@@ -21,6 +22,9 @@ final class APIClient {
     private let decoder: JSONDecoder
 
     var authorizationProvider: (() -> String?)?
+    // Returns true once a new access token is available. Called at most once
+    // per request so a failing refresh can't cause a retry loop.
+    var refreshHandler: (() async -> Bool)?
 
     init(baseURL: URL, session: URLSession = .shared) {
         self.baseURL = baseURL
@@ -36,6 +40,29 @@ final class APIClient {
     }
 
     func send<Response: Decodable>(_ endpoint: APIEndpoint) async throws -> Response {
+        do {
+            return try await performSend(endpoint)
+        } catch APIError.unauthorized {
+            guard endpoint.requiresAuth, let refreshHandler, await refreshHandler() else {
+                throw APIError.unauthorized
+            }
+            return try await performSend(endpoint)
+        }
+    }
+
+    // For endpoints with no response body (e.g. logout → 204).
+    func sendNoContent(_ endpoint: APIEndpoint) async throws {
+        do {
+            try await performSendNoContent(endpoint)
+        } catch APIError.unauthorized {
+            guard endpoint.requiresAuth, let refreshHandler, await refreshHandler() else {
+                throw APIError.unauthorized
+            }
+            try await performSendNoContent(endpoint)
+        }
+    }
+
+    private func performSend<Response: Decodable>(_ endpoint: APIEndpoint) async throws -> Response {
         let (data, response) = try await execute(endpoint)
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.invalidResponse
@@ -49,8 +76,7 @@ final class APIClient {
         }
     }
 
-    // For endpoints with no response body (e.g. logout → 204).
-    func sendNoContent(_ endpoint: APIEndpoint) async throws {
+    private func performSendNoContent(_ endpoint: APIEndpoint) async throws {
         let (data, response) = try await execute(endpoint)
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.invalidResponse
