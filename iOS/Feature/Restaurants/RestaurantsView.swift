@@ -35,6 +35,8 @@ private let mockRestaurants: [Restaurant] = [
 ]
 
 struct RestaurantsView: View {
+    @Environment(\.dismiss) private var dismiss
+
     var body: some View {
         ZStack {
             CampusMealColors.neutral50
@@ -42,9 +44,11 @@ struct RestaurantsView: View {
 
             VStack(alignment: .leading, spacing: 16) {
                 HStack(spacing: 12) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundStyle(CampusMealColors.neutral900)
+                    Button { dismiss() } label: {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundStyle(CampusMealColors.neutral900)
+                    }
 
                     Text("Nearby restaurants")
                         .font(CampusMealTypography.headingL)
@@ -80,6 +84,7 @@ struct RestaurantsView: View {
                 }
             }
         }
+        .toolbar(.hidden, for: .navigationBar)
     }
 }
 
@@ -125,8 +130,10 @@ private struct RestaurantCard: View {
 
                 Spacer()
 
-                Button {
-                    // Navigation to restaurant detail — implemented alongside BQ work in Sprint 2.
+                // Restaurant detail is skipped for MS7 — goes straight to Comparison.
+                // A dedicated detail screen is implemented in Sprint 2.
+                NavigationLink {
+                    ComparisonView()
                 } label: {
                     Text("View details")
                         .font(CampusMealTypography.labelM)
