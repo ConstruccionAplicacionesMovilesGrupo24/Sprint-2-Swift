@@ -60,6 +60,7 @@ struct ComparisonView: View {
 
     var context = DecisionContext()
     private let repository = DecisionRepository()
+    private let analytics = AnalyticsTracker.shared
 
     var body: some View {
         ScrollView {
@@ -153,6 +154,10 @@ struct ComparisonView: View {
             let response = try await repository.compare(context.request())
             selectedType = nil
             state = .loaded(response)
+            // BQ8: the result is now on screen. Only results with alternatives can be selected.
+            if !response.alternatives.isEmpty {
+                Task { await analytics.trackImpression(recommendationId: response.recommendationId) }
+            }
         } catch APIError.unauthorized {
             state = .failed("Your session expired. Please log in again.")
         } catch {
@@ -161,7 +166,16 @@ struct ComparisonView: View {
     }
 
     private func choose(_ alternative: RecommendationAlternativeDTO) {
+        guard case .loaded(let response) = state, selectedType != alternative.type else { return }
         selectedType = alternative.type
+        // BQ8: only the recommendation id and the chosen type are sent — the backend derives
+        // the explanation category itself.
+        Task {
+            await analytics.trackSelection(
+                recommendationId: response.recommendationId,
+                alternative: alternative.type.rawValue
+            )
+        }
     }
 }
 
