@@ -39,6 +39,27 @@ final class SessionManager {
         isLoggedIn = false
     }
 
+    /// Best-effort network logout, then clears the local session regardless of
+    /// the network result (backend-architecture-and-frontend-integration.md §10:
+    /// "Clear the session and return to Login if refresh fails" applies the same
+    /// way here — an unreachable backend must never block signing out locally).
+    func endSession() async {
+        if let refreshToken = store.loadRefreshToken() {
+            let endpoint = APIEndpoint(
+                path: "auth/logout",
+                method: .post,
+                body: LogoutRequest(refreshToken: refreshToken),
+                requiresAuth: false
+            )
+            _ = try? await apiClient.sendNoContent(endpoint)
+        }
+        logout()
+    }
+
+    private struct LogoutRequest: Encodable {
+        let refreshToken: String
+    }
+
     private struct RefreshRequest: Encodable {
         let refreshToken: String
     }

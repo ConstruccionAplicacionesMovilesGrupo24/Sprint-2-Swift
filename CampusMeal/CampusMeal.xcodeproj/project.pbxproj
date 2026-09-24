@@ -25,6 +25,8 @@
 		F81958443062CCDE0023DBB1 /* SessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F81958423062CCDE0023DBB1 /* SessionStore.swift */; };
 		F85A4A9E305CED15005C718C /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A8F305CED15005C718C /* Colors.swift */; };
 		F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F85A4A9F305CEF08005C718C /* LoginView.swift */; };
+		F8D4D935306429A700F27690 /* AuthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D4D934306429A700F27690 /* AuthRepository.swift */; };
+		F8D4D936306429A700F27690 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D4D933306429A700F27690 /* AuthModels.swift */; };
 		F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F28593305CF413004D5F3A /* RestaurantsView.swift */; };
 /* End PBXBuildFile section */
 
@@ -48,6 +50,8 @@
 		F85A4A7A305CE961005C718C /* CampusMeal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CampusMeal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F85A4A8F305CED15005C718C /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		F85A4A9F305CEF08005C718C /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		F8D4D933306429A700F27690 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
+		F8D4D934306429A700F27690 /* AuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRepository.swift; sourceTree = "<group>"; };
 		F8F28593305CF413004D5F3A /* RestaurantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -174,6 +178,8 @@
 		F85A4A95305CED15005C718C /* Auth */ = {
 			isa = PBXGroup;
 			children = (
+				F8D4D933306429A700F27690 /* AuthModels.swift */,
+				F8D4D934306429A700F27690 /* AuthRepository.swift */,
 				F85A4A9F305CEF08005C718C /* LoginView.swift */,
 			);
 			path = Auth;
@@ -330,6 +336,8 @@
 				F85A4A9E305CED15005C718C /* Colors.swift in Sources */,
 				F8080D6C305CF86D0076CD16 /* Typography.swift in Sources */,
 				F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */,
+				F8D4D935306429A700F27690 /* AuthRepository.swift in Sources */,
+				F8D4D936306429A700F27690 /* AuthModels.swift in Sources */,
 				000BAA94D4CED8F0D2B7F898 /* ComparisonView.swift in Sources */,
 				F8080D80305E0A7F0076CD16 /* ProfileView.swift in Sources */,
 				F819582E3062CB490023DBB1 /* APIClient.swift in Sources */,
