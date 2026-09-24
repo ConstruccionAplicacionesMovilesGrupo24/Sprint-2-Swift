@@ -20,11 +20,21 @@ struct APIEndpoint {
     let method: HTTPMethod
     var body: Encodable?
     var requiresAuth: Bool = true
+    // Query string parameters (e.g. `withinDays=3`). Kept separate from `path`
+    // because `appendingPathComponent` would percent-encode a literal "?".
+    var queryItems: [URLQueryItem] = []
 
-    init(path: String, method: HTTPMethod, body: Encodable? = nil, requiresAuth: Bool = true) {
+    init(
+        path: String,
+        method: HTTPMethod,
+        body: Encodable? = nil,
+        requiresAuth: Bool = true,
+        queryItems: [URLQueryItem] = []
+    ) {
         self.path = path
         self.method = method
         self.body = body
         self.requiresAuth = requiresAuth
+        self.queryItems = queryItems
     }
 }

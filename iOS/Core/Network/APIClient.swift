@@ -85,7 +85,13 @@ final class APIClient {
     }
 
     private func execute(_ endpoint: APIEndpoint) async throws -> (Data, URLResponse) {
-        var request = URLRequest(url: baseURL.appendingPathComponent(endpoint.path))
+        var url = baseURL.appendingPathComponent(endpoint.path)
+        if !endpoint.queryItems.isEmpty,
+           var components = URLComponents(url: url, resolvingAgainstBaseURL: false) {
+            components.queryItems = endpoint.queryItems
+            url = components.url ?? url
+        }
+        var request = URLRequest(url: url)
         request.httpMethod = endpoint.method.rawValue
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
