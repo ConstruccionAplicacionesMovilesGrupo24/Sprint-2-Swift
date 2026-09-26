@@ -30,6 +30,9 @@
 		F8D4D935306429A700F27690 /* AuthRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D4D934306429A700F27690 /* AuthRepository.swift */; };
 		F8D4D936306429A700F27690 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8D4D933306429A700F27690 /* AuthModels.swift */; };
 		F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8F28593305CF413004D5F3A /* RestaurantsView.swift */; };
+		269833283A7726B4A2F063F4 /* RestaurantDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6B27D461446253594E7474E /* RestaurantDetailView.swift */; };
+		83C32705E1C94C10F3BE196A /* RestaurantsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF056415553911F5F1DD9F00 /* RestaurantsRepository.swift */; };
+		D6B2D7C6963D4A5F266442B3 /* RestaurantsModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DFD05D4426406C5F48EC947 /* RestaurantsModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +60,9 @@
 		F8D4D933306429A700F27690 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
 		F8D4D934306429A700F27690 /* AuthRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthRepository.swift; sourceTree = "<group>"; };
 		F8F28593305CF413004D5F3A /* RestaurantsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsView.swift; sourceTree = "<group>"; };
+		E6B27D461446253594E7474E /* RestaurantDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantDetailView.swift; sourceTree = "<group>"; };
+		CF056415553911F5F1DD9F00 /* RestaurantsRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsRepository.swift; sourceTree = "<group>"; };
+		6DFD05D4426406C5F48EC947 /* RestaurantsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantsModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -225,6 +231,9 @@
 		F85A4A9A305CED15005C718C /* Restaurants */ = {
 			isa = PBXGroup;
 			children = (
+				E6B27D461446253594E7474E /* RestaurantDetailView.swift */,
+				6DFD05D4426406C5F48EC947 /* RestaurantsModels.swift */,
+				CF056415553911F5F1DD9F00 /* RestaurantsRepository.swift */,
 				F8F28593305CF413004D5F3A /* RestaurantsView.swift */,
 			);
 			path = Restaurants;
@@ -342,6 +351,9 @@
 				F8080D7E305E0A680076CD16 /* InventoryView.swift in Sources */,
 				F8F28594305CF413004D5F3A /* RestaurantsView.swift in Sources */,
 				F85A4A9E305CED15005C718C /* Colors.swift in Sources */,
+				D6B2D7C6963D4A5F266442B3 /* RestaurantsModels.swift in Sources */,
+				83C32705E1C94C10F3BE196A /* RestaurantsRepository.swift in Sources */,
+				269833283A7726B4A2F063F4 /* RestaurantDetailView.swift in Sources */,
 				F8080D6C305CF86D0076CD16 /* Typography.swift in Sources */,
 				F85A4AA0305CEF08005C718C /* LoginView.swift in Sources */,
 				F8D4D935306429A700F27690 /* AuthRepository.swift in Sources */,
