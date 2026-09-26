@@ -7,126 +7,63 @@
 
 import SwiftUI
 
-// MARK: - Mock domain (MS7 prototype data — Sprint 2 will replace this with a real
-// repository backed by the CampusMeal API and the shared Inventory feature).
+// MARK: - Comparison context
 
-private enum MealMode: String, CaseIterable, Identifiable {
-    case cook = "Cook", walk = "Walk", order = "Order"
-    var id: String { rawValue }
-    var symbol: String {
-        switch self {
-        case .cook: "frying.pan"
-        case .walk: "figure.walk"
-        case .order: "takeoutbag.and.cup.and.straw"
-        }
+// Context sent to BQ5. The Context feature and Core/Location are not built yet, so this uses
+// the manual-campus fallback (Uniandes) and the same sample values shown on Home.
+struct DecisionContext {
+    var latitude = 4.6025
+    var longitude = -74.0653
+    var campusId: String? = "campus-001"
+    var availableMinutes = 45
+    var maximumBudget = 20_000
+    var dietaryPreferences: [String] = ["VEGETARIAN"]
+    var includeDelivery = true
+
+    var summary: String {
+        let diet = dietaryPreferences.map { $0.replacingOccurrences(of: "_", with: "-").capitalized }
+        return (["\(availableMinutes) min available", cop(maximumBudget)] + diet).joined(separator: " · ")
     }
-}
 
-private struct MealOption: Identifiable {
-    let id: String
-    let title: String
-    let subtitle: String
-    let mode: MealMode
-    let price: Int
-    let minutes: Int
-    var ingredientTags: [String] = []
-}
-
-private struct InventoryItem: Identifiable {
-    let id: String
-    let name: String
-    let daysUntilExpiration: Int
-
-    var isExpiringSoon: Bool { daysUntilExpiration <= 3 }
+    func request(at date: Date = .now) -> CompareMealOptionsRequest {
+        CompareMealOptionsRequest(
+            location: MealDecisionLocation(latitude: latitude, longitude: longitude),
+            campusId: campusId,
+            availableMinutes: availableMinutes,
+            maximumBudget: maximumBudget,
+            dietaryPreferences: dietaryPreferences,
+            includeDelivery: includeDelivery,
+            // ISO8601DateFormatter emits UTC with a "Z" and no fractional seconds.
+            requestedAt: ISO8601DateFormatter().string(from: date)
+        )
+    }
 }
 
 private func cop(_ amount: Int) -> String {
     amount.formatted(.currency(code: "COP").precision(.fractionLength(0)))
 }
 
-// Demonstration data only; matches the ingredients referenced in the Home
-// screen's "Expiring soon" list (Figma frame 05), so the two screens stay consistent.
-private let mockInventory: [InventoryItem] = [
-    InventoryItem(id: "milk", name: "Whole milk", daysUntilExpiration: 0),
-    InventoryItem(id: "tomatoes", name: "Tomatoes", daysUntilExpiration: 2)
-]
-
-private let mockOptions: [MealOption] = [
-    MealOption(id: "cook-pasta", title: "Creamy tomato pasta", subtitle: "sample recipe",
-               mode: .cook, price: 4500, minutes: 15, ingredientTags: ["milk", "tomatoes"]),
-    MealOption(id: "cook-bowl", title: "Vegetable rice bowl", subtitle: "sample recipe",
-               mode: .cook, price: 8000, minutes: 25, ingredientTags: ["tomatoes"]),
-    MealOption(id: "walk-green-bowl", title: "Green Bowl", subtitle: "12 min walk",
-               mode: .walk, price: 17000, minutes: 38),
-    MealOption(id: "walk-fresh-fields", title: "Fresh Fields", subtitle: "9 min walk",
-               mode: .walk, price: 19000, minutes: 30),
-    MealOption(id: "order-la-huerta", title: "La Huerta", subtitle: "delivery",
-               mode: .order, price: 23500, minutes: 45)
-]
-
-// MARK: - Recommender
-
-/// Simple, transparent heuristic used to rank meal options — rule-based logic
-/// over budget, time and pantry data, not a trained model (see MS7 §1).
-private enum Recommender {
-    static func score(for option: MealOption, budget: Double, availableMinutes: Double, inventory: [InventoryItem]) -> Int {
-        let budgetFit = budget > 0 ? max(0, min(1, (budget - Double(option.price)) / budget)) : 0
-        let timeFit = availableMinutes > 0 ? max(0, min(1, (availableMinutes - Double(option.minutes)) / availableMinutes)) : 0
-
-        var ingredientBonus = 0.0
-        if option.mode == .cook {
-            let expiringSoonIDs = Set(inventory.filter(\.isExpiringSoon).map(\.id))
-            let matches = option.ingredientTags.filter { expiringSoonIDs.contains($0) }.count
-            ingredientBonus = Double(matches) * 15
-        }
-
-        let raw = budgetFit * 40 + timeFit * 40 + ingredientBonus
-        return min(max(Int(raw.rounded()), 0), 100)
-    }
-
-    static func confidenceLabel(forScore score: Int) -> String {
-        switch score {
-        case 85...: "High"
-        case 60..<85: "Medium"
-        default: "Low"
-        }
-    }
-}
-
-private struct RankedOption: Identifiable {
-    let option: MealOption
-    let score: Int
-    var id: String { option.id }
+private enum ComparisonState {
+    case loading
+    case loaded(CompareMealOptionsResponse)
+    case failed(String)
 }
 
 // MARK: - Comparison screen (Figma frame 11)
 
+// Displays the backend's BQ5 result as-is: order, rank, score, recommended flag and
+// explanation all come from `POST meal-decisions/compare`. No ranking happens on the client.
 struct ComparisonView: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var state: ComparisonState = .loading
+    @State private var selectedType: MealAlternativeType?
 
-    // Mock context — Sprint 2 will read this from the shared Context feature
-    // once Navigation wires the screens together.
-    private let budget: Double = 20000
-    private let availableMinutes: Double = 45
-    private let dietaryPreference = "Vegetarian"
-
-    private var ranked: [RankedOption] {
-        Dictionary(grouping: mockOptions, by: \.mode)
-            .compactMap { _, options -> RankedOption? in
-                options
-                    .map { RankedOption(option: $0, score: Recommender.score(for: $0, budget: budget, availableMinutes: availableMinutes, inventory: mockInventory)) }
-                    .max { $0.score < $1.score }
-            }
-            .sorted { $0.score > $1.score }
-    }
+    var context = DecisionContext()
+    private let repository = DecisionRepository()
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Label("Visual prototype · sample data", systemImage: "info.circle")
-                    .font(CampusMealTypography.caption)
-                    .foregroundStyle(CampusMealColors.neutral500)
-
                 HStack(spacing: 8) {
                     Button { dismiss() } label: {
                         Image(systemName: "chevron.left")
@@ -139,19 +76,13 @@ struct ComparisonView: View {
                         .foregroundStyle(CampusMealColors.neutral900)
                 }
 
-                Text("\(Int(availableMinutes)) min available · \(cop(Int(budget))) · \(dietaryPreference)")
+                Text(context.summary)
                     .font(CampusMealTypography.bodyS)
                     .foregroundStyle(CampusMealColors.neutral500)
 
-                ForEach(Array(ranked.enumerated()), id: \.element.id) { index, entry in
-                    if index == 0 {
-                        RecommendedCard(ranked: entry, budget: budget, availableMinutes: availableMinutes, inventory: mockInventory)
-                    } else {
-                        AlternativeCard(ranked: entry, budget: budget, availableMinutes: availableMinutes)
-                    }
-                }
+                content
 
-                Text("Prices and times are illustrative. This prototype does not place orders.")
+                Text("Scores and explanations come from CampusMeal's recommendation service. This app does not place orders.")
                     .font(CampusMealTypography.caption)
                     .foregroundStyle(CampusMealColors.neutral500)
             }
@@ -159,8 +90,82 @@ struct ComparisonView: View {
         }
         .background(CampusMealColors.neutral50)
         .toolbar(.hidden, for: .navigationBar)
+        .task { await compare() }
+        .refreshable { await compare() }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        switch state {
+        case .loading:
+            ProgressView()
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 40)
+        case .failed(let message):
+            VStack(alignment: .leading, spacing: 8) {
+                // No "negative/error" color in the design system yet — same choice as LoginView.
+                Text(message)
+                    .font(CampusMealTypography.bodyM)
+                    .foregroundStyle(.red)
+                Button("Try again") { Task { await compare() } }
+                    .font(CampusMealTypography.labelM)
+                    .foregroundStyle(CampusMealColors.brand600)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(CampusMealColors.neutral0, in: RoundedRectangle(cornerRadius: 20))
+        case .loaded(let response) where response.alternatives.isEmpty:
+            VStack(alignment: .leading, spacing: 8) {
+                Image(systemName: "clock.badge.exclamationmark")
+                    .font(.system(size: 28))
+                    .foregroundStyle(CampusMealColors.neutral500)
+                Text(response.mainExplanation)
+                    .font(CampusMealTypography.bodyM)
+                    .foregroundStyle(CampusMealColors.neutral700)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(CampusMealColors.neutral0, in: RoundedRectangle(cornerRadius: 20))
+        case .loaded(let response):
+            ForEach(response.alternatives) { alternative in
+                if alternative.recommended {
+                    RecommendedCard(
+                        alternative: alternative,
+                        mainExplanation: response.mainExplanation,
+                        supportingReasons: response.supportingReasons,
+                        isSelected: selectedType == alternative.type,
+                        onChoose: { choose(alternative) }
+                    )
+                } else {
+                    AlternativeCard(
+                        alternative: alternative,
+                        isSelected: selectedType == alternative.type,
+                        onChoose: { choose(alternative) }
+                    )
+                }
+            }
+        }
+    }
+
+    private func compare() async {
+        if case .loaded = state {} else { state = .loading }
+        do {
+            let response = try await repository.compare(context.request())
+            selectedType = nil
+            state = .loaded(response)
+        } catch APIError.unauthorized {
+            state = .failed("Your session expired. Please log in again.")
+        } catch {
+            state = .failed("Couldn't compare your options. Check your connection and try again.")
+        }
+    }
+
+    private func choose(_ alternative: RecommendationAlternativeDTO) {
+        selectedType = alternative.type
     }
 }
+
+// MARK: - Cards
 
 private struct MetricChip: View {
     let value: String
@@ -182,19 +187,48 @@ private struct MetricChip: View {
     }
 }
 
-private struct RecommendedCard: View {
-    let ranked: RankedOption
-    let budget: Double
-    let availableMinutes: Double
-    let inventory: [InventoryItem]
+private extension RecommendationAlternativeDTO {
+    var displayScore: String { "\(Int(score.rounded()))" }
 
-    private var option: MealOption { ranked.option }
-
-    private var matchedIngredients: [InventoryItem] {
-        inventory.filter { option.ingredientTags.contains($0.id) && $0.isExpiringSoon }
+    // "Green Bowl · 12 min walk", "Green Bowl · delivery", "Uses 3 expiring items".
+    var subtitle: String {
+        switch type {
+        case .cook:
+            let count = expiringIngredients?.count ?? 0
+            return count == 0 ? "With what you have at home" : "Uses \(count) item\(count == 1 ? "" : "s") expiring soon"
+        case .walk:
+            let name = restaurant?.name ?? "Nearby restaurant"
+            // walkingMinutes is null when the route provider couldn't estimate it.
+            return restaurant?.walkingMinutes.map { "\(name) · \($0) min walk" } ?? "\(name) · walking time unavailable"
+        case .order:
+            return "\(restaurant?.name ?? "Restaurant") · delivery"
+        }
     }
+}
 
-    private var timeBuffer: Int { Int(availableMinutes) - option.minutes }
+private struct ChooseButton: View {
+    let isSelected: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label(isSelected ? "Chosen" : "Choose", systemImage: isSelected ? "checkmark" : "hand.tap")
+                .font(CampusMealTypography.labelL)
+                .foregroundStyle(CampusMealColors.neutral900)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(CampusMealColors.brand500, in: RoundedRectangle(cornerRadius: 12))
+        }
+        .disabled(isSelected)
+    }
+}
+
+private struct RecommendedCard: View {
+    let alternative: RecommendationAlternativeDTO
+    let mainExplanation: String
+    let supportingReasons: [String]
+    let isSelected: Bool
+    let onChoose: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -205,64 +239,50 @@ private struct RecommendedCard: View {
                     .background(CampusMealColors.brand500, in: Capsule())
                     .foregroundStyle(CampusMealColors.neutral0)
                 Spacer()
-                Image(systemName: option.mode.symbol)
+                Image(systemName: alternative.type.symbol)
                     .foregroundStyle(CampusMealColors.brand500)
             }
             HStack(alignment: .firstTextBaseline) {
-                Text(option.mode == .cook ? "Cook at home" : option.mode.rawValue)
-                    .font(CampusMealTypography.headingXL)
-                    .foregroundStyle(CampusMealColors.neutral900)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(alternative.type.title)
+                        .font(CampusMealTypography.headingXL)
+                        .foregroundStyle(CampusMealColors.neutral900)
+                    Text(alternative.subtitle)
+                        .font(CampusMealTypography.bodyS)
+                        .foregroundStyle(CampusMealColors.neutral500)
+                }
                 Spacer()
-                Text("\(ranked.score)")
+                Text(alternative.displayScore)
                     .font(CampusMealTypography.displayL)
                     .foregroundStyle(CampusMealColors.brand500)
             }
 
             HStack(spacing: 10) {
-                MetricChip(value: "\(option.minutes) min", label: option.mode == .cook ? "Prep time" : "Total")
-                MetricChip(value: cop(option.price), label: option.mode == .cook ? "Estimated cost" : "Cost")
-                MetricChip(value: Recommender.confidenceLabel(forScore: ranked.score), label: "Confidence")
+                MetricChip(value: "\(alternative.estimatedMinutes) min", label: alternative.type == .cook ? "Prep time" : "Total")
+                MetricChip(value: cop(alternative.estimatedCost), label: alternative.type == .cook ? "Estimated cost" : "Cost")
+                MetricChip(value: "#\(alternative.rank)", label: "Rank")
             }
 
-            if option.mode == .cook && !matchedIngredients.isEmpty {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Why?")
-                        .font(CampusMealTypography.headingM)
-                        .foregroundStyle(CampusMealColors.neutral900)
-                    let names = matchedIngredients.map { $0.name.lowercased() }.joined(separator: " and ")
-                    Text("Uses \(matchedIngredients.count == 1 ? "one ingredient" : "\(matchedIngredients.count) ingredients") expiring soon: \(names).")
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Why?")
+                    .font(CampusMealTypography.headingM)
+                    .foregroundStyle(CampusMealColors.neutral900)
+                Text(mainExplanation)
+                    .font(CampusMealTypography.bodyM)
+                    .foregroundStyle(CampusMealColors.neutral700)
+                ForEach(supportingReasons, id: \.self) { reason in
+                    Text("· \(reason)")
                         .font(CampusMealTypography.bodyM)
                         .foregroundStyle(CampusMealColors.neutral700)
-                    if timeBuffer > 0 {
-                        Text("· Fits your available time with a \(timeBuffer) min buffer")
-                            .font(CampusMealTypography.bodyM)
-                            .foregroundStyle(CampusMealColors.neutral700)
-                    }
+                }
+                if let ingredients = alternative.expiringIngredients, !ingredients.isEmpty {
+                    Text("Expiring: " + ingredients.map { $0.name.lowercased() }.joined(separator: ", "))
+                        .font(CampusMealTypography.bodyS)
+                        .foregroundStyle(CampusMealColors.neutral500)
                 }
             }
 
-            HStack(spacing: 12) {
-                Button {
-                    // Recipe detail — implemented alongside BQ work in Sprint 2.
-                } label: {
-                    Text("View recipe")
-                        .font(CampusMealTypography.labelL)
-                        .foregroundStyle(CampusMealColors.brand600)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(CampusMealColors.brand500, lineWidth: 1.5))
-                }
-                Button {
-                    // Choosing an option — implemented alongside Decision persistence in Sprint 2.
-                } label: {
-                    Text("Choose")
-                        .font(CampusMealTypography.labelL)
-                        .foregroundStyle(CampusMealColors.neutral900)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(CampusMealColors.brand500, in: RoundedRectangle(cornerRadius: 12))
-                }
-            }
+            ChooseButton(isSelected: isSelected, action: onChoose)
         }
         .padding()
         .background(CampusMealColors.brand50, in: RoundedRectangle(cornerRadius: 20))
@@ -271,38 +291,29 @@ private struct RecommendedCard: View {
 }
 
 private struct AlternativeCard: View {
-    let ranked: RankedOption
-    let budget: Double
-    let availableMinutes: Double
-    private var option: MealOption { ranked.option }
-
-    private var fitsCaption: String {
-        option.price <= Int(budget) && option.minutes <= Int(availableMinutes)
-            ? "Within your budget and time."
-            : "Outside your current budget or time."
-    }
+    let alternative: RecommendationAlternativeDTO
+    let isSelected: Bool
+    let onChoose: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text(option.mode.rawValue)
+                Text(alternative.type.title)
                     .font(CampusMealTypography.headingM)
                     .foregroundStyle(CampusMealColors.neutral900)
                 Spacer()
-                Image(systemName: option.mode.symbol)
+                Image(systemName: alternative.type.symbol)
                     .foregroundStyle(CampusMealColors.brand500)
             }
-            Text("\(option.title) · \(option.subtitle)")
+            Text(alternative.subtitle)
                 .font(CampusMealTypography.bodyS)
                 .foregroundStyle(CampusMealColors.neutral500)
             HStack(spacing: 10) {
-                MetricChip(value: "\(option.minutes) min", label: "Total", tint: CampusMealColors.sand100)
-                MetricChip(value: cop(option.price), label: "Cost", tint: CampusMealColors.sand100)
-                MetricChip(value: "\(ranked.score)", label: "Score", tint: CampusMealColors.sand100)
+                MetricChip(value: "\(alternative.estimatedMinutes) min", label: "Total", tint: CampusMealColors.sand100)
+                MetricChip(value: cop(alternative.estimatedCost), label: "Cost", tint: CampusMealColors.sand100)
+                MetricChip(value: alternative.displayScore, label: "Score", tint: CampusMealColors.sand100)
             }
-            Text(fitsCaption)
-                .font(CampusMealTypography.bodyS)
-                .foregroundStyle(CampusMealColors.neutral500)
+            ChooseButton(isSelected: isSelected, action: onChoose)
         }
         .padding()
         .background(CampusMealColors.neutral0, in: RoundedRectangle(cornerRadius: 20))
