@@ -7,37 +7,6 @@
 
 import SwiftUI
 
-// Search context sent to BQ4. Core/Location is still empty and the Context feature is not
-// built yet, so this uses the manual-campus fallback (Uniandes coordinates + campusId) and
-// the same sample values Home shows — the backend applies identical rules to both origins.
-struct RestaurantSearchContext {
-    var latitude = 4.6025
-    var longitude = -74.0653
-    var campusId: String? = "campus-001"
-    var availableMinutes = 45
-    var maximumBudget = 20_000
-    var dietaryPreferences: [DietaryTag] = [.vegetarian]
-    var includeDelivery = true
-
-    var summary: String {
-        let diet = dietaryPreferences.map(\.label).joined(separator: ", ")
-        return "\(availableMinutes) min · COP \(maximumBudget.formatted(.number.locale(Locale(identifier: "en_US"))))"
-            + (diet.isEmpty ? "" : " · \(diet)")
-    }
-
-    func request(at date: Date = .now) -> RestaurantSearchRequest {
-        RestaurantSearchRequest(
-            location: GeoLocation(latitude: latitude, longitude: longitude),
-            campusId: campusId,
-            availableMinutes: availableMinutes,
-            maximumBudget: maximumBudget,
-            dietaryPreferences: dietaryPreferences,
-            includeDelivery: includeDelivery,
-            requestedAt: CampusMealFormat.utcTimestamp(date)
-        )
-    }
-}
-
 private enum SearchState {
     case loading
     case loaded(RestaurantSearchResponse)
@@ -47,8 +16,8 @@ private enum SearchState {
 struct RestaurantsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var state: SearchState = .loading
+    @State private var contextStore = ContextStore.shared
 
-    var context = RestaurantSearchContext()
     private let repository = RestaurantsRepository()
 
     var body: some View {
@@ -72,7 +41,7 @@ struct RestaurantsView: View {
                 .padding(.top, 12)
 
                 HStack {
-                    Text(context.summary)
+                    Text(contextStore.current.summary)
                         .font(CampusMealTypography.bodyM)
                         .foregroundStyle(CampusMealColors.brand700)
 
@@ -150,7 +119,7 @@ struct RestaurantsView: View {
     private func search() async {
         if case .loaded = state {} else { state = .loading }
         do {
-            state = .loaded(try await repository.search(context.request()))
+            state = .loaded(try await repository.search(contextStore.current.restaurantSearchRequest()))
         } catch APIError.unauthorized {
             state = .failed("Your session expired. Please log in again.")
         } catch {
