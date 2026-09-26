@@ -17,6 +17,8 @@ private enum ExpiringItemsState {
 
 struct HomeView: View {
     @State private var expiringState: ExpiringItemsState = .loading
+    @State private var contextStore = ContextStore.shared
+    @State private var isShowingContext = false
 
     private let inventoryRepository = InventoryRepository()
 
@@ -45,14 +47,13 @@ struct HomeView: View {
                             .font(CampusMealTypography.headingM)
                             .foregroundStyle(CampusMealColors.neutral900)
                         Spacer()
-                        // Navigates to the Context feature once #Context-issue lands.
-                        Text("Change")
+                        Button("Change") { isShowingContext = true }
                             .font(CampusMealTypography.labelM)
                             .foregroundStyle(CampusMealColors.brand600)
                     }
-                    ContextRow(label: "Campus", value: "Uniandes")
-                    ContextRow(label: "Time available", value: "45 minutes")
-                    ContextRow(label: "Budget", value: "$20,000")
+                    ContextRow(label: "Campus", value: contextStore.current.campusDisplayName)
+                    ContextRow(label: "Time available", value: "\(contextStore.current.availableMinutes) minutes")
+                    ContextRow(label: "Budget", value: CampusMealFormat.cop(contextStore.current.maximumBudget))
                 }
                 .padding()
                 .background(CampusMealColors.neutral0, in: RoundedRectangle(cornerRadius: 20))
@@ -99,6 +100,9 @@ struct HomeView: View {
         .background(CampusMealColors.neutral50)
         .task { await loadExpiringItems() }
         .refreshable { await loadExpiringItems() }
+        .sheet(isPresented: $isShowingContext) {
+            SetContextView()
+        }
     }
 
     @ViewBuilder

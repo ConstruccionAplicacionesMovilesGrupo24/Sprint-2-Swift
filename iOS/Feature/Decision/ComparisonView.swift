@@ -7,38 +7,6 @@
 
 import SwiftUI
 
-// MARK: - Comparison context
-
-// Context sent to BQ5. The Context feature and Core/Location are not built yet, so this uses
-// the manual-campus fallback (Uniandes) and the same sample values shown on Home.
-struct DecisionContext {
-    var latitude = 4.6025
-    var longitude = -74.0653
-    var campusId: String? = "campus-001"
-    var availableMinutes = 45
-    var maximumBudget = 20_000
-    var dietaryPreferences: [String] = ["VEGETARIAN"]
-    var includeDelivery = true
-
-    var summary: String {
-        let diet = dietaryPreferences.map { $0.replacingOccurrences(of: "_", with: "-").capitalized }
-        return (["\(availableMinutes) min available", cop(maximumBudget)] + diet).joined(separator: " · ")
-    }
-
-    func request(at date: Date = .now) -> CompareMealOptionsRequest {
-        CompareMealOptionsRequest(
-            location: MealDecisionLocation(latitude: latitude, longitude: longitude),
-            campusId: campusId,
-            availableMinutes: availableMinutes,
-            maximumBudget: maximumBudget,
-            dietaryPreferences: dietaryPreferences,
-            includeDelivery: includeDelivery,
-            // ISO8601DateFormatter emits UTC with a "Z" and no fractional seconds.
-            requestedAt: ISO8601DateFormatter().string(from: date)
-        )
-    }
-}
-
 private func cop(_ amount: Int) -> String {
     amount.formatted(.currency(code: "COP").precision(.fractionLength(0)))
 }
@@ -57,8 +25,8 @@ struct ComparisonView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var state: ComparisonState = .loading
     @State private var selectedType: MealAlternativeType?
+    @State private var contextStore = ContextStore.shared
 
-    var context = DecisionContext()
     private let repository = DecisionRepository()
     private let analytics = AnalyticsTracker.shared
 
@@ -77,7 +45,7 @@ struct ComparisonView: View {
                         .foregroundStyle(CampusMealColors.neutral900)
                 }
 
-                Text(context.summary)
+                Text(contextStore.current.summary)
                     .font(CampusMealTypography.bodyS)
                     .foregroundStyle(CampusMealColors.neutral500)
 
@@ -151,7 +119,7 @@ struct ComparisonView: View {
     private func compare() async {
         if case .loaded = state {} else { state = .loading }
         do {
-            let response = try await repository.compare(context.request())
+            let response = try await repository.compare(contextStore.current.compareMealOptionsRequest())
             selectedType = nil
             state = .loaded(response)
             // BQ8: the result is now on screen. Only results with alternatives can be selected.
