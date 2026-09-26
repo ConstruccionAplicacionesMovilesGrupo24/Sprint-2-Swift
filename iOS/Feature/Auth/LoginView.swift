@@ -10,7 +10,10 @@ import SwiftUI
 struct LoginView: View {
     @State private var email: String = ""
     @State private var password: String = ""
-    var onLogin: () -> Void = {}
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+
+    private let authRepository = AuthRepository()
 
     var body: some View {
         ZStack {
@@ -72,13 +75,21 @@ struct LoginView: View {
                                 .foregroundStyle(CampusMealColors.brand600)
                         }
                     }
+
+                    if let errorMessage {
+                        // The design system has no "negative/error" color yet (not
+                        // extracted from Figma) — using the system red rather than
+                        // guessing a hex value that might not match the real one.
+                        Text(errorMessage)
+                            .font(CampusMealTypography.bodyS)
+                            .foregroundStyle(.red)
+                    }
                 }
 
                 Button {
-                    // Mock for MS7 — real authentication logic (Keychain + backend) is implemented in Sprint 2.
-                    onLogin()
+                    Task { await logIn() }
                 } label: {
-                    Text("Log in")
+                    Text(isLoading ? "Logging in…" : "Log in")
                         .font(CampusMealTypography.labelL)
                         .foregroundStyle(CampusMealColors.neutral900)
                         .frame(maxWidth: .infinity)
@@ -86,6 +97,7 @@ struct LoginView: View {
                         .background(CampusMealColors.brand500)
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                 }
+                .disabled(isLoading)
 
                 Spacer()
 
@@ -107,6 +119,33 @@ struct LoginView: View {
             .padding(.horizontal, 24)
             .padding(.top, 80)
             .padding(.bottom, 40)
+        }
+    }
+
+    private func logIn() async {
+        errorMessage = nil
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            try await authRepository.login(email: email, password: password)
+        } catch let error as APIError {
+            errorMessage = message(for: error)
+        } catch {
+            errorMessage = "Something went wrong. Please try again."
+        }
+    }
+
+    private func message(for error: APIError) -> String {
+        switch error {
+        case .unauthorized:
+            "Invalid email or password."
+        case .validation(let message):
+            message
+        case .transport:
+            "Couldn't reach the server. Check your connection and try again."
+        default:
+            "Something went wrong. Please try again."
         }
     }
 }

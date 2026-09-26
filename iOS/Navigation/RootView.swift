@@ -7,20 +7,20 @@
 
 import SwiftUI
 
-// MARK: - App entry flow (MS7 prototype)
+// MARK: - App entry flow
 //
 // Login -> MainTabView (Home / Inventory / Decide / Profile), matching the
-// Figma bottom navigation pattern. `isLoggedIn` is local, in-memory state
-// standing in for real auth; Sprint 2 will replace it with the Session
-// feature (Keychain-backed).
+// Figma bottom navigation pattern. `SessionManager.isLoggedIn` reflects
+// whether a token pair is in Keychain; LoginView drives it indirectly by
+// calling AuthRepository, which calls SessionManager.completeLogin().
 struct RootView: View {
-    @State private var isLoggedIn = false
+    @State private var session = SessionManager.shared
 
     var body: some View {
-        if isLoggedIn {
+        if session.isLoggedIn {
             MainTabView()
         } else {
-            LoginView(onLogin: { isLoggedIn = true })
+            LoginView()
         }
     }
 }

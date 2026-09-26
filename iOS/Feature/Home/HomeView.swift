@@ -7,38 +7,25 @@
 
 import SwiftUI
 
-// Demonstration inventory data only; entered manually — not synced with any
-// real pantry or sensor. Matches the ingredients referenced by the "Cook at
-// home" recommendation in ComparisonView (Figma frame 11), so Home and
-// Comparison stay consistent.
-private struct InventoryItem: Identifiable {
-    let id: String
-    let name: String
-    let quantityDescription: String
-    let category: String
-    let daysUntilExpiration: Int
-
-    var isToday: Bool { daysUntilExpiration <= 0 }
-
-    var expirationLabel: String {
-        isToday
-            ? "Due today"
-            : "Due in \(daysUntilExpiration) day\(daysUntilExpiration == 1 ? "" : "s")"
-    }
+// Expiring items come from BQ2 (`GET inventory/expiring?withinDays=3`) and are shown in
+// the backend's priority order — no client-side re-sorting.
+private enum ExpiringItemsState {
+    case loading
+    case loaded([InventoryItemDTO])
+    case failed(String)
 }
 
-private let mockExpiringItems: [InventoryItem] = [
-    InventoryItem(id: "milk", name: "Whole milk", quantityDescription: "1 L",
-                  category: "Dairy", daysUntilExpiration: 0),
-    InventoryItem(id: "tomatoes", name: "Tomatoes", quantityDescription: "6 units",
-                  category: "Vegetables", daysUntilExpiration: 2)
-]
-
 struct HomeView: View {
+    @State private var expiringState: ExpiringItemsState = .loading
+    @State private var contextStore = ContextStore.shared
+    @State private var isShowingContext = false
+
+    private let inventoryRepository = InventoryRepository()
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                Label("Visual prototype · sample data", systemImage: "info.circle")
+                Label("Context values are sample data · expiring items are live", systemImage: "info.circle")
                     .font(CampusMealTypography.caption)
                     .foregroundStyle(CampusMealColors.neutral500)
 
@@ -60,14 +47,13 @@ struct HomeView: View {
                             .font(CampusMealTypography.headingM)
                             .foregroundStyle(CampusMealColors.neutral900)
                         Spacer()
-                        // Navigates to the Context feature once #Context-issue lands.
-                        Text("Change")
+                        Button("Change") { isShowingContext = true }
                             .font(CampusMealTypography.labelM)
                             .foregroundStyle(CampusMealColors.brand600)
                     }
-                    ContextRow(label: "Campus", value: "Uniandes")
-                    ContextRow(label: "Time available", value: "45 minutes")
-                    ContextRow(label: "Budget", value: "$20,000")
+                    ContextRow(label: "Campus", value: contextStore.current.campusDisplayName)
+                    ContextRow(label: "Time available", value: "\(contextStore.current.availableMinutes) minutes")
+                    ContextRow(label: "Budget", value: CampusMealFormat.cop(contextStore.current.maximumBudget))
                 }
                 .padding()
                 .background(CampusMealColors.neutral0, in: RoundedRectangle(cornerRadius: 20))
@@ -75,22 +61,7 @@ struct HomeView: View {
                 Text("Expiring soon")
                     .font(CampusMealTypography.headingM)
                     .foregroundStyle(CampusMealColors.neutral900)
-                ForEach(mockExpiringItems) { item in
-                    HStack {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(item.name)
-                                .font(CampusMealTypography.headingM)
-                                .foregroundStyle(CampusMealColors.neutral900)
-                            Text("\(item.quantityDescription) · \(item.category)")
-                                .font(CampusMealTypography.bodyS)
-                                .foregroundStyle(CampusMealColors.neutral500)
-                        }
-                        Spacer()
-                        UrgencyBadge(item: item)
-                    }
-                    .padding()
-                    .background(CampusMealColors.neutral0, in: RoundedRectangle(cornerRadius: 20))
-                }
+                expiringItemsSection
 
                 NavigationLink {
                     ComparisonView()
@@ -127,6 +98,76 @@ struct HomeView: View {
             .padding(24)
         }
         .background(CampusMealColors.neutral50)
+        .task { await loadExpiringItems() }
+        .refreshable { await loadExpiringItems() }
+        .sheet(isPresented: $isShowingContext) {
+            SetContextView()
+        }
+    }
+
+    @ViewBuilder
+    private var expiringItemsSection: some View {
+        switch expiringState {
+        case .loading:
+            ProgressView()
+                .frame(maxWidth: .infinity)
+                .padding()
+        case .failed(let message):
+            VStack(alignment: .leading, spacing: 8) {
+                // No "negative/error" color in the design system yet — same choice as LoginView.
+                Text(message)
+                    .font(CampusMealTypography.bodyS)
+                    .foregroundStyle(.red)
+                Button("Try again") {
+                    Task { await loadExpiringItems() }
+                }
+                .font(CampusMealTypography.labelM)
+                .foregroundStyle(CampusMealColors.brand600)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(CampusMealColors.neutral0, in: RoundedRectangle(cornerRadius: 20))
+        case .loaded(let items) where items.isEmpty:
+            HStack(spacing: 12) {
+                Image(systemName: "checkmark.circle")
+                    .foregroundStyle(CampusMealColors.neutral500)
+                Text("Nothing expires in the next \(InventoryRepository.defaultWithinDays) days.")
+                    .font(CampusMealTypography.bodyM)
+                    .foregroundStyle(CampusMealColors.neutral500)
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(CampusMealColors.neutral0, in: RoundedRectangle(cornerRadius: 20))
+        case .loaded(let items):
+            ForEach(items) { item in
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(item.name)
+                            .font(CampusMealTypography.headingM)
+                            .foregroundStyle(CampusMealColors.neutral900)
+                        Text("\(item.quantityDescription) · expires \(item.expirationDate)")
+                            .font(CampusMealTypography.bodyS)
+                            .foregroundStyle(CampusMealColors.neutral500)
+                    }
+                    Spacer()
+                    UrgencyBadge(item: item)
+                }
+                .padding()
+                .background(CampusMealColors.neutral0, in: RoundedRectangle(cornerRadius: 20))
+            }
+        }
+    }
+
+    private func loadExpiringItems() async {
+        if case .loaded = expiringState {} else { expiringState = .loading }
+        do {
+            let items = try await inventoryRepository.fetchExpiringItems()
+            expiringState = .loaded(items)
+        } catch APIError.unauthorized {
+            expiringState = .failed("Your session expired. Please log in again.")
+        } catch {
+            expiringState = .failed("Couldn't load your expiring items. Check your connection and try again.")
+        }
     }
 }
 
@@ -149,15 +190,15 @@ private struct ContextRow: View {
 /// Urgency indicator for an inventory item. Status is conveyed through text
 /// and icon as well as color (MS7 §3.3): brand700 (today) / accent500 (soon).
 private struct UrgencyBadge: View {
-    let item: InventoryItem
+    let item: InventoryItemDTO
 
     var body: some View {
-        Label(item.expirationLabel, systemImage: item.isToday ? "exclamationmark.triangle.fill" : "circle.fill")
+        Label(item.expirationLabel, systemImage: item.isDueToday ? "exclamationmark.triangle.fill" : "circle.fill")
             .font(CampusMealTypography.labelM)
-            .foregroundStyle(item.isToday ? CampusMealColors.brand700 : CampusMealColors.accent700)
+            .foregroundStyle(item.isDueToday ? CampusMealColors.brand700 : CampusMealColors.accent700)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)
-            .background((item.isToday ? CampusMealColors.brand100 : CampusMealColors.accent100), in: Capsule())
+            .background((item.isDueToday ? CampusMealColors.brand100 : CampusMealColors.accent100), in: Capsule())
     }
 }
 
